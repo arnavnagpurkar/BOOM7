@@ -86,6 +86,10 @@
   color: white;
 }
 
+.cl-userButtonPopoverActionButton:hover {
+  color: white;
+}
+
 /* =============================== */
 
 @layer utilities {
