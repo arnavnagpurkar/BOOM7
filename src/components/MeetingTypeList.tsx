@@ -1,14 +1,53 @@
 "use client"
 import { useState } from 'react'
 import HomeCard from './HomeCard'
-import Link from 'next/link'
 import MeetingModal from './MeetingModal'
+import { useUser } from '@clerk/nextjs'
+import { Call, useStreamVideoClient } from '@stream-io/video-react-sdk'
+import { useRouter } from 'next/navigation'
 
 const MeetingTypeList = () => {
-  const [meetingState, setMeetingState] = useState<'isScheduleMeeting' | 'isJoiningMeeting' | 'isInstantMeeting' | undefined>()
+  const router = useRouter();
+  const [meetingState, setMeetingState] = useState<'isScheduleMeeting' | 'isJoiningMeeting' | 'isInstantMeeting' | undefined>();
+  const [values, setValues] = useState({
+    dateTime: new Date(),
+    description: '',
+    link: ''
+  })
+  const [callDetails, setCallDetails] = useState<Call>();
+  const { user } = useUser();
+  const client = useStreamVideoClient();
 
-  const createMeeting = () => {
-    
+  const createMeeting = async () => {
+    if (!client || !user) return;
+
+    try {
+      const id = crypto.randomUUID();
+      const call = client.call('default', id);
+
+      if (!call) throw new Error('Failed to create call');
+
+      const startsAt = values.dateTime.toISOString() || new Date(Date.now()).toISOString();
+      const description = values.description || 'Instant Meeting';
+
+      await call.getOrCreate({
+        data: {
+          starts_at: startsAt,
+          custom: {
+            description
+          }
+        }
+      })
+
+      setCallDetails(call);
+
+      if (!values.description) {
+        router.push(`/meeting/${call.id}`)
+      }
+
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   return (
@@ -41,16 +80,15 @@ const MeetingTypeList = () => {
       />
 
       {/* View Recordings Card */}
-      <Link href="/recordings">
-        <HomeCard
-          bgcolor='bg-yellow-1'
-          image='/icons/Video.svg'
-          title='View Recordings'
-          description="Meeting Recordings"
-        />
-      </Link>
+      <HomeCard
+        bgcolor='bg-yellow-1'
+        image='/icons/Video.svg'
+        title='View Recordings'
+        description="Meeting Recordings"
+        clickFunction={() => router.push('/recordings')}
+      />
 
-      <MeetingModal 
+      <MeetingModal
         isOpen={meetingState === 'isInstantMeeting'}
         onClose={() => setMeetingState(undefined)}
         title="Start an Instant Meeting"
