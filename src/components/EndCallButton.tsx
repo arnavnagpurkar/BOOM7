@@ -17,7 +17,7 @@ const EndCallButton = () => {
 
   return (
     <Button
-      className="bg-red-500 rounded-xl hover:bg-[#e96962]g"
+      className="bg-red-500 rounded-xl hover:bg-[#e96962]"
       onClick={async () => {
         await call.endCall();
         router.push('/');
