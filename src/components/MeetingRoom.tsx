@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils';
-import { CallControls, CallParticipantListing, CallParticipantsList, CallStatsButton, CallingState, PaginatedGridLayout, SpeakerLayout, useCallStateHooks } from '@stream-io/video-react-sdk';
+import { CallControls, CallStatsButton, CallingState, PaginatedGridLayout, SpeakerLayout, useCallStateHooks } from '@stream-io/video-react-sdk';
 import { useState } from 'react'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { LayoutList, Users } from 'lucide-react';
@@ -15,10 +15,10 @@ const MeetingRoom = () => {
   const [layout, setLayout] = useState<CallLayoutType>('speaker-left');
 
   const [showParticipants, setShowParticipants] = useState(false);
-  
+
   const searchParams = useSearchParams();
   const isPersonalRoom = !!searchParams.get('personal');
-  
+
   const { useCallCallingState } = useCallStateHooks();
   const callingState = useCallCallingState();
 
