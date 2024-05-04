@@ -1,15 +1,27 @@
+"use client"
 import MeetingTypeList from '@/components/MeetingTypeList';
-import React from 'react';
+import { useState, useEffect } from 'react';
 
 const Home = () => {
-  const formattedTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }).toUpperCase();
-  const formattedDate = () => {
+  const [currentTime, setCurrentTime] = useState(getFormattedTime());
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTime(getFormattedTime());
+    },1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  function getFormattedTime() {
+    return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }).toUpperCase();
+  }
+
+  function getFormattedDate() {
     const d = new Date();
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     return `${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]}, ${d.getFullYear()}`;
-  };
-
+  }
 
   return (
     <section className='flex size-full flex-col gap-10 text-white'>
@@ -20,10 +32,10 @@ const Home = () => {
           </h2>
           <div className='flex flex-col gap-2'>
             <h1 className='text-4xl font-extrabold lg:text-7xl'>
-              {formattedTime}
+              {currentTime}
             </h1>
             <p className='text-lg font-medium text-sky-1 lg:text-2xl'>
-              {formattedDate()}
+              {getFormattedDate()}
             </p>
           </div>
         </div>
