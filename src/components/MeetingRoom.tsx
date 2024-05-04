@@ -5,6 +5,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { LayoutList, Users } from 'lucide-react';
 import { Button } from './ui/button';
 import { useSearchParams } from 'next/navigation';
+import EndCallButton from './EndCallButton';
 
 
 type CallLayoutType = 'grid' | 'speaker-left' | 'speaker-right'
