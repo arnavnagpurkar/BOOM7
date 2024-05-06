@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation'
 import { useToast } from './ui/use-toast'
 import { Textarea } from './ui/textarea'
 import ReactDatePicker from 'react-datepicker'
+import { Input } from './ui/input'
 
 const MeetingTypeList = () => {
   const router = useRouter();
@@ -161,6 +162,37 @@ const MeetingTypeList = () => {
         buttonText="Start Meeting"
         clickFunction={createMeeting}
       />
+
+      <MeetingModal
+        isOpen={meetingState === 'isJoiningMeeting'}
+        onClose={() => setMeetingState(undefined)}
+        title="Type your invite link here"
+        className="text-center"
+        buttonText="Join Meeting"
+        clickFunction={() => {
+          if (!values.link) {
+            toast({ title: "Please enter a meeting link" });
+            return;
+          }
+      
+          // Regular expression to validate URL format
+          const urlPattern = /^(ftp|http|https):\/\/[^ "]+$/;
+      
+          if (!urlPattern.test(values.link)) {
+            toast({ title: "Please enter a valid meeting link" });
+            return;
+          }
+      
+          router.push(values.link);
+        }}
+      >
+        <Input 
+          placeholder='Meeting Link'
+          className='bg-dark-3 border-none rounded-[8px] focus-visible:ring-0 focus-visible:ring-offset-0'
+          onChange={(e) => setValues({ ...values, link: e.target.value })}
+        />
+      </MeetingModal>
+
     </section>
   )
 }
