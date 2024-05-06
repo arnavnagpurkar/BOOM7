@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button'
 import { toast } from '@/components/ui/use-toast'
 import { useUser } from '@clerk/nextjs'
 import { useStreamVideoClient } from '@stream-io/video-react-sdk'
-import useGetCallById from '@/hooks/useGetCallById'
+import { useGetCallById } from '@/hooks/useGetCallById'
 import React from 'react'
 import { useRouter } from 'next/navigation'
 

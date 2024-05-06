@@ -1,12 +1,12 @@
-import { useUser } from "@clerk/nextjs";
-import { Call, useStreamVideoClient } from "@stream-io/video-react-sdk"
-import { useEffect, useState } from "react"
+import { useEffect, useState } from 'react';
+import { useUser } from '@clerk/nextjs';
+import { Call, useStreamVideoClient } from '@stream-io/video-react-sdk';
 
-const useGetCalls = () => {
-  const [calls, setCalls] = useState<Call[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const client = useStreamVideoClient();
+export const useGetCalls = () => {
   const { user } = useUser();
+  const client = useStreamVideoClient();
+  const [calls, setCalls] = useState<Call[]>();
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const loadCalls = async () => {
@@ -21,38 +21,31 @@ const useGetCalls = () => {
             starts_at: { $exists: true },
             $or: [
               { created_by_user_id: user.id },
-              { members: { $in: [user.id] } }
-            ]
-          }
+              { members: { $in: [user.id] } },
+            ],
+          },
         });
 
         setCalls(calls);
       } catch (error) {
-        console.log(error);
+        console.error(error);
       } finally {
         setIsLoading(false);
       }
-
-    }
+    };
 
     loadCalls();
   }, [client, user?.id]);
 
   const now = new Date();
 
-  const endedCalls = calls.filter(({ state: { startsAt, endedAt } }: Call) => {
-    return (startsAt && new Date(startsAt) < now || !!endedAt);
-  })
-  const upcomingCalls = calls.filter(({ state: { startsAt, endedAt } }: Call) => {
-    return (startsAt && new Date(startsAt) > now);
+  const endedCalls = calls?.filter(({ state: { startsAt, endedAt } }: Call) => {
+    return (startsAt && new Date(startsAt) < now) || !!endedAt
   })
 
-  return {
-    endedCalls,
-    upcomingCalls,
-    callRecordings: calls,
-    isLoading
-  }
-}
+  const upcomingCalls = calls?.filter(({ state: { startsAt } }: Call) => {
+    return startsAt && new Date(startsAt) > now
+  })
 
-export default useGetCalls;
+  return { endedCalls, upcomingCalls, callRecordings: calls, isLoading }
+};
