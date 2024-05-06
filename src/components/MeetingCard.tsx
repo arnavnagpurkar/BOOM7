@@ -45,7 +45,7 @@ const MeetingCard = ({
               {buttonIcon && (
                 <Image src={buttonIcon} alt="feature" width={20} height={20} />
               )}
-              {buttonIcon !== undefined && '&nbsp;'} {buttonText}
+              {buttonIcon !== undefined && <>&nbsp;</>  } {buttonText} 
             </Button>
             <Button
               onClick={() => {
